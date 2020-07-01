@@ -1,0 +1,91 @@
+{
+    "common": {
+        "name": "steve_sh",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "Steve's Smart Home",
+        "titleLang": {
+            "en": "Steve's Smart Home",
+            "de": "Steves Smart Home",
+            "ru": "Умный дом Стива",
+            "pt": "Casa Inteligente de Steve",
+            "nl": "Steve's Smart Home",
+            "fr": "La maison intelligente de Steve",
+            "it": "La casa intelligente di Steve",
+            "es": "La casa inteligente de Steve",
+            "pl": "Inteligentny dom Steve'a",
+            "zh-cn": "史蒂夫的智能家居"
+        },
+        "desc": {
+            "en": "steve_sh",
+            "de": "steve_sh",
+            "ru": "steve_sh",
+            "pt": "steve_sh",
+            "nl": "steve_sh",
+            "fr": "steve_sh",
+            "it": "steve_sh",
+            "es": "steve_sh",
+            "pl": "steve_sh",
+            "zh-cn": "steve_sh"
+        },
+        "authors": ["stesto <s.stodder@hotmail.de>"],
+        "keywords": ["smarthome"],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "build/main.js",
+        "icon": "steve_sh.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/stesto/ioBroker.steve_sh/master/admin/steve_sh.png",
+        "readme": "https://github.com/stesto/ioBroker.steve_sh/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "iot-systems",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "push",
+        "materialize": true,
+        "materializeTab": true,
+        "adminTab": {
+            "singleton": true,
+            "name": {
+                "en": "Steve's Smart Home",
+                "de": "Steves Smart Home",
+                "ru": "Умный дом Стива",
+                "pt": "Casa Inteligente de Steve",
+                "nl": "Steve's Smart Home",
+                "fr": "La maison intelligente de Steve",
+                "it": "La casa intelligente di Steve",
+                "es": "La casa inteligente de Steve",
+                "pl": "Inteligentny dom Steve'a",
+                "zh-cn": "史蒂夫的智能家居"
+            },
+            "link": "",
+            "fa-icon": "info"
+        },
+        "supportCustoms": true,
+        "dependencies": [
+            {
+                "js-controller": ">=1.4.2"
+            }
+        ]
+    },
+    "native": {
+        "option1": true,
+        "option2": "42"
+    },
+    "objects": [],
+    "instanceObjects": []
+}
