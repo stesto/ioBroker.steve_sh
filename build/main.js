@@ -15,14 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
+const sh = require("./lib/SteveSH/SteveSHMain");
 class SteveSh extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: "steve_sh" }));
         this.on("ready", this.onReady.bind(this));
-        this.on("stateChange", this.onStateChange.bind(this));
-        // this.on("objectChange", this.onObjectChange.bind(this));
-        // this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
+        this.on("stateChange", this.onStateChange.bind(this));
+        this.shMain = new sh.SteveSHMain(this);
     }
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -30,9 +30,10 @@ class SteveSh extends utils.Adapter {
     onReady() {
         return __awaiter(this, void 0, void 0, function* () {
             // Initialize your adapter here
+            this.shMain.init();
             // The adapters config (in the instance object everything under the attribute "native") is accessible via
             // this.config:
-            this.log.info("config option1: " + this.config.option1);
+            this.log.info("config option1BLA: " + this.config.option1);
             this.log.info("config option2: " + this.config.option2);
             /*
             For every state in the system there has to be also an object of type state
@@ -51,7 +52,7 @@ class SteveSh extends utils.Adapter {
                 native: {},
             });
             // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-            this.subscribeStates("testVariable");
+            this.subscribeStates("lamp");
             // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
             // this.subscribeStates("lights.*");
             // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
@@ -78,44 +79,32 @@ class SteveSh extends utils.Adapter {
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      */
     onUnload(callback) {
+        var _a;
         try {
             // Here you must clear all timeouts or intervals that may still be active
             // clearTimeout(timeout1);
             // clearTimeout(timeout2);
             // ...
             // clearInterval(interval1);
+            (_a = this.shMain) === null || _a === void 0 ? void 0 : _a.unload();
             callback();
         }
         catch (e) {
             callback();
         }
     }
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
     /**
      * Is called if a subscribed state changes
      */
     onStateChange(id, state) {
-        if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        }
-        else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
-        }
+        this.shMain.onStateChange(id, state);
+        // if (state) {
+        //     // The state was changed
+        //     this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+        // } else {
+        //     // The state was deleted
+        //     this.log.info(`state ${id} deleted`);
+        // }
     }
 }
 if (module.parent) {

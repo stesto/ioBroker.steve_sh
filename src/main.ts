@@ -5,6 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
+import * as sh from "./lib/SteveSH/SteveSHMain";
 
 // Load your modules here, e.g.:
 // import * as fs from "fs";
@@ -25,16 +26,17 @@ declare global {
 }
 
 class SteveSh extends utils.Adapter {
+    shMain: sh.SteveSHMain;
+
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
             name: "steve_sh",
         });
         this.on("ready", this.onReady.bind(this));
-        this.on("stateChange", this.onStateChange.bind(this));
-        // this.on("objectChange", this.onObjectChange.bind(this));
-        // this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
+        this.on("stateChange", this.onStateChange.bind(this));
+        this.shMain = new sh.SteveSHMain(this);
     }
 
     /**
@@ -42,10 +44,10 @@ class SteveSh extends utils.Adapter {
      */
     private async onReady(): Promise<void> {
         // Initialize your adapter here
-
+        this.shMain.init();
         // The adapters config (in the instance object everything under the attribute "native") is accessible via
         // this.config:
-        this.log.info("config option1: " + this.config.option1);
+        this.log.info("config option1BLA: " + this.config.option1);
         this.log.info("config option2: " + this.config.option2);
 
         /*
@@ -66,7 +68,7 @@ class SteveSh extends utils.Adapter {
         });
 
         // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-        this.subscribeStates("testVariable");
+        this.subscribeStates("lamp");
         // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
         // this.subscribeStates("lights.*");
         // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
@@ -104,57 +106,25 @@ class SteveSh extends utils.Adapter {
             // clearTimeout(timeout2);
             // ...
             // clearInterval(interval1);
-
+            this.shMain?.unload();
             callback();
         } catch (e) {
             callback();
         }
     }
-
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
-
     /**
      * Is called if a subscribed state changes
      */
     private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
-        if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        } else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
-        }
+        this.shMain.onStateChange(id, state);
+        // if (state) {
+        //     // The state was changed
+        //     this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+        // } else {
+        //     // The state was deleted
+        //     this.log.info(`state ${id} deleted`);
+        // }
     }
-
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.message" property to be set to true in io-package.json
-    //  */
-    // private onMessage(obj: ioBroker.Message): void {
-    //     if (typeof obj === "object" && obj.message) {
-    //         if (obj.command === "send") {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info("send command");
-
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-    //         }
-    //     }
-    // }
 }
 
 if (module.parent) {
